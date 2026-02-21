@@ -1,4 +1,5 @@
 import jetbrains.buildServer.configs.kotlin.*
+import jetbrains.buildServer.configs.kotlin.projectFeatures.dockerRegistry
 
 /*
 The settings script is an entry point for defining a TeamCity
@@ -30,9 +31,19 @@ project {
     params {
         param("repo.url", "https://github.com/WFHasaidi/tdg-devops-test")
         param("env.REGISTRY_HOST", "registry.bahamout.fr")
-        param("docker.registry.connection.id", "PROJECT_EXT_3")
+        param("docker.registry.connection.id", "PROJECT_EXT_4")
         param("env.TC_BUILD_DIR_NAME", "build-%env.TC_OS%-%env.TC_COMPILER%_%build.number%")
         param("system.teamcity.build.checkoutDir.expireHours", "0")
+    }
+
+    features {
+        dockerRegistry {
+            id = "PROJECT_EXT_4"
+            name = "registry-bahamout"
+            url = "https://registry.bahamout.fr"
+            userName = "asaidi"
+            password = "credentialsJSON:4884a009-a815-486f-9a1a-421b865bb7e6"
+        }
     }
 
     vcsRoot(TdgVcsRoot)
