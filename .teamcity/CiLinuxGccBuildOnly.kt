@@ -46,7 +46,7 @@ object CiLinuxGccBuildOnly : BuildType({
         dockerRegistryConnections {
             cleanupPushedImages = true
             loginToRegistry = on {
-                dockerRegistryId = "%docker.registry.connection.id%"
+                dockerRegistryId = "PROJECT_EXT_4"
             }
         }
     }
