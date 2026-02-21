@@ -26,4 +26,16 @@ version = "2025.11"
 
 project {
     description = "C++17 calculator (lib + app)"
+
+    params {
+        param("repo.url", "https://github.com/WFHasaidi/tdg-devops-test")
+        param("env.REGISTRY_HOST", "registry.bahamout.fr")
+        param("docker.registry.connection.id", "PROJECT_EXT_3")
+        param("env.TC_BUILD_DIR_NAME", "build-%env.TC_OS%-%env.TC_COMPILER%_%build.number%")
+        param("system.teamcity.build.checkoutDir.expireHours", "0")
+    }
+
+    vcsRoot(TdgVcsRoot)
+
+    buildType(CiLinuxGccBuildOnly)
 }
