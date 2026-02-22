@@ -23,8 +23,8 @@ object CiLinuxGccBuildOnly : BuildType({
         param("env.TC_COMPILER", "gcc")
 
         // CMake preset name
-        param("env.CMAKE_CONFIGURE_PRESET", "default")
-        param("env.CMAKE_BUILD_PRESET", "default")
+        param("env.CMAKE_CONFIGURE_PRESET", "release")
+        param("env.CMAKE_BUILD_PRESET", "release")
 
         // Parallelism
         param("env.BUILD_JOBS", "8")
@@ -141,8 +141,8 @@ object CiLinuxGccBuildOnly : BuildType({
                 set -euo pipefail
 
                 mkdir -p artifacts
-                if [ -d "build" ]; then
-                  cp -a "build" artifacts/build-dir || true
+                if [ -d "build-release" ]; then
+                  cp -a "build-release" artifacts/build-dir || true
                 fi
                 echo "Artifacts prepared."
             """.trimIndent()
