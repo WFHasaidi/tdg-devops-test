@@ -1,11 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-tc_progress_start() { echo "##teamcity[progressStart '$1']" || true; }
-tc_progress_finish() { echo "##teamcity[progressFinish '$1']" || true; }
-tc_block_open() { echo "##teamcity[blockOpened name='$1']" || true; }
-tc_block_close() { echo "##teamcity[blockClosed name='$1']" || true; }
-
 require_cmd() {
   command -v "$1" >/dev/null 2>&1 || {
     echo "ERROR: missing command: $1" >&2
@@ -16,26 +11,51 @@ require_cmd() {
 CONFIGURE_PRESET="${1:-default}"
 BUILD_PRESET="${2:-$CONFIGURE_PRESET}"
 BUILD_JOBS="${BUILD_JOBS:-8}"
+CI_PHASE="${CI_PHASE:-all}"
 
 echo "CONFIGURE_PRESET=${CONFIGURE_PRESET}"
 echo "BUILD_PRESET=${BUILD_PRESET}"
 echo "BUILD_JOBS=${BUILD_JOBS}"
+echo "CI_PHASE=${CI_PHASE}"
 echo "TC_BUILD_DIR_NAME=${TC_BUILD_DIR_NAME:-unset}"
 
 require_cmd cmake
 require_cmd ninja
+require_cmd gcc
 
-tc_block_open "Tool versions"
-cmake --version
-ninja --version
-tc_block_close "Tool versions"
+run_tool_versions() {
+  cmake --version
+  gcc --version
+  ninja --version
+}
 
-tc_progress_start "Configure"
-cmake --preset "${CONFIGURE_PRESET}"
-tc_progress_finish "Configure"
+run_configure() {
+  cmake --preset "${CONFIGURE_PRESET}"
+}
 
-tc_progress_start "Build"
-cmake --build --preset "${BUILD_PRESET}" --parallel "${BUILD_JOBS}"
-tc_progress_finish "Build"
+run_build() {
+  cmake --build --preset "${BUILD_PRESET}" --parallel "${BUILD_JOBS}"
+}
+
+case "${CI_PHASE}" in
+  tool-versions)
+    run_tool_versions
+    ;;
+  configure)
+    run_configure
+    ;;
+  build)
+    run_build
+    ;;
+  all)
+    run_tool_versions
+    run_configure
+    run_build
+    ;;
+  *)
+    echo "ERROR: unsupported CI_PHASE '${CI_PHASE}'" >&2
+    exit 2
+    ;;
+esac
 
 echo "CI linux script completed."
