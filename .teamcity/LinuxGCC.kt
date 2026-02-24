@@ -5,8 +5,8 @@ import jetbrains.buildServer.configs.kotlin.buildFeatures.xmlReport
 import jetbrains.buildServer.configs.kotlin.buildSteps.script
 import jetbrains.buildServer.configs.kotlin.triggers.vcs
 
-object CiLinuxGccBuildOnly : BuildType({
-    name = "CI :: Linux GCC (build-only)"
+object LinuxGCC : BuildType({
+    name = "CI :: Linux GCC"
 
     // Use explicit VCS root from settings.kts to control branchSpec behavior.
     vcs {
@@ -79,8 +79,8 @@ object CiLinuxGccBuildOnly : BuildType({
                   "%env.DOCKER_IMAGE%" \
                   bash -lc '
                     set -euo pipefail
-                    chmod +x ./scripts/ci_linux.sh || true
-                    ./scripts/ci_linux.sh "${'$'}CMAKE_CONFIGURE_PRESET" "${'$'}CMAKE_BUILD_PRESET" \
+                    chmod +x ./ci/scripts/ci_linux.sh || true
+                    ./ci/scripts/ci_linux.sh "${'$'}CMAKE_CONFIGURE_PRESET" "${'$'}CMAKE_BUILD_PRESET" \
                       > >(tee /ws/logs/tool-versions.out.log) \
                       2> >(tee /ws/logs/tool-versions.err.log >&2)
                   '
@@ -106,8 +106,8 @@ object CiLinuxGccBuildOnly : BuildType({
                   "%env.DOCKER_IMAGE%" \
                   bash -lc '
                     set -euo pipefail
-                    chmod +x ./scripts/ci_linux.sh || true
-                    ./scripts/ci_linux.sh "${'$'}CMAKE_CONFIGURE_PRESET" "${'$'}CMAKE_BUILD_PRESET" \
+                    chmod +x ./ci/scripts/ci_linux.sh || true
+                    ./ci/scripts/ci_linux.sh "${'$'}CMAKE_CONFIGURE_PRESET" "${'$'}CMAKE_BUILD_PRESET" \
                       > >(tee /ws/logs/configure.out.log) \
                       2> >(tee /ws/logs/configure.err.log >&2)
                   '
@@ -135,8 +135,8 @@ object CiLinuxGccBuildOnly : BuildType({
                   "%env.DOCKER_IMAGE%" \
                   bash -lc '
                     set -euo pipefail
-                    chmod +x ./scripts/ci_linux.sh || true
-                    ./scripts/ci_linux.sh "${'$'}CMAKE_CONFIGURE_PRESET" "${'$'}CMAKE_BUILD_PRESET" \
+                    chmod +x ./ci/scripts/ci_linux.sh || true
+                    ./ci/scripts/ci_linux.sh "${'$'}CMAKE_CONFIGURE_PRESET" "${'$'}CMAKE_BUILD_PRESET" \
                       > >(tee /ws/logs/build.out.log) \
                       2> >(tee /ws/logs/build.err.log >&2)
                   '
@@ -162,8 +162,8 @@ object CiLinuxGccBuildOnly : BuildType({
                   "%env.DOCKER_IMAGE%" \
                   bash -lc '
                     set -euo pipefail
-                    chmod +x ./scripts/ci_linux.sh || true
-                    ./scripts/ci_linux.sh "${'$'}CMAKE_CONFIGURE_PRESET" "${'$'}CMAKE_BUILD_PRESET" \
+                    chmod +x ./ci/scripts/ci_linux.sh || true
+                    ./ci/scripts/ci_linux.sh "${'$'}CMAKE_CONFIGURE_PRESET" "${'$'}CMAKE_BUILD_PRESET" \
                       > >(tee /ws/logs/configure-release.out.log) \
                       2> >(tee /ws/logs/configure-release.err.log >&2)
                   '
@@ -191,8 +191,8 @@ object CiLinuxGccBuildOnly : BuildType({
                   "%env.DOCKER_IMAGE%" \
                   bash -lc '
                     set -euo pipefail
-                    chmod +x ./scripts/ci_linux.sh || true
-                    ./scripts/ci_linux.sh "${'$'}CMAKE_CONFIGURE_PRESET" "${'$'}CMAKE_BUILD_PRESET" \
+                    chmod +x ./ci/scripts/ci_linux.sh || true
+                    ./ci/scripts/ci_linux.sh "${'$'}CMAKE_CONFIGURE_PRESET" "${'$'}CMAKE_BUILD_PRESET" \
                       > >(tee /ws/logs/build-release.out.log) \
                       2> >(tee /ws/logs/build-release.err.log >&2)
                   '
@@ -219,8 +219,8 @@ object CiLinuxGccBuildOnly : BuildType({
                   "%env.DOCKER_IMAGE%" \
                   bash -lc '
                     set -euo pipefail
-                    chmod +x ./scripts/ci_linux.sh || true
-                    ./scripts/ci_linux.sh "${'$'}CMAKE_CONFIGURE_PRESET" "${'$'}CMAKE_BUILD_PRESET" \
+                    chmod +x ./ci/scripts/ci_linux.sh || true
+                    ./ci/scripts/ci_linux.sh "${'$'}CMAKE_CONFIGURE_PRESET" "${'$'}CMAKE_BUILD_PRESET" \
                       > >(tee /ws/logs/test-debug.out.log) \
                       2> >(tee /ws/logs/test-debug.err.log >&2)
                   '

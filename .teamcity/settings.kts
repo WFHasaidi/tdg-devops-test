@@ -47,5 +47,5 @@ project {
 
     vcsRoot(TdgVcsRoot)
 
-    buildType(CiLinuxGccBuildOnly)
+    buildType(LinuxGCC)
 }
