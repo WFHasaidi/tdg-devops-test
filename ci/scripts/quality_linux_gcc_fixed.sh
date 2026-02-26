@@ -31,7 +31,9 @@ gcovr "${GCOVR_COMMON_ARGS[@]}" --html-details --output "${LOG_DIR}/coverage.htm
 perf stat \
   -e task-clock,context-switches,cpu-migrations,page-faults \
   --output "${LOG_DIR}/perf-stat.txt" \
-  "${TEST_BIN}"
+  "${TEST_BIN}" || true
+
+# perf may fail on locked-down kernels (kptr_restrict / missing kallsyms). Continue on failure.
 perf record \
   -F 99 \
   -g \
@@ -41,18 +43,23 @@ perf record \
   "${TEST_BIN}" \
   --gtest_repeat="${PERF_REPEAT}" \
   --gtest_break_on_failure \
-  --gtest_brief=1
-perf report \
-  --input "${LOG_DIR}/perf.data" \
-  --stdio \
-  > "${LOG_DIR}/perf-report.txt"
-perf script --input "${LOG_DIR}/perf.data" > "${LOG_DIR}/perf.script"
-"${FLAMEGRAPH_DIR}/stackcollapse-perf.pl" "${LOG_DIR}/perf.script" > "${LOG_DIR}/perf.folded"
-grep -Ev "(testing::|std::|__gnu_cxx::|RUN_ALL_TESTS)" "${LOG_DIR}/perf.folded" > "${LOG_DIR}/perf.folded.filtered"
-"${FLAMEGRAPH_DIR}/flamegraph.pl" \
-  --title "Linux GCC fixed - calculator_tests" \
-  "${LOG_DIR}/perf.folded.filtered" \
-  > "${LOG_DIR}/flamegraph.svg"
+  --gtest_brief=1 || true
+
+if [ -s "${LOG_DIR}/perf.data" ]; then
+  perf report \
+    --input "${LOG_DIR}/perf.data" \
+    --stdio \
+    > "${LOG_DIR}/perf-report.txt" || true
+  perf script --input "${LOG_DIR}/perf.data" > "${LOG_DIR}/perf.script" || true
+  "${FLAMEGRAPH_DIR}/stackcollapse-perf.pl" "${LOG_DIR}/perf.script" > "${LOG_DIR}/perf.folded" || true
+  grep -Ev "(testing::|std::|__gnu_cxx::|RUN_ALL_TESTS)" "${LOG_DIR}/perf.folded" > "${LOG_DIR}/perf.folded.filtered" || true
+  "${FLAMEGRAPH_DIR}/flamegraph.pl" \
+    --title "Linux GCC fixed - calculator_tests" \
+    "${LOG_DIR}/perf.folded.filtered" \
+    > "${LOG_DIR}/flamegraph.svg" || true
+else
+  echo "perf.data not generated (likely due to kernel perf restrictions); skipping perf report/flamegraph" >&2
+fi
 
 python3 /ws/ci/scripts/render_quality_reports.py "${LOG_DIR}/coverage.html" "Coverage (gcovr)"
 python3 /ws/ci/scripts/render_quality_reports.py "${LOG_DIR}/valgrind.log" "Valgrind"

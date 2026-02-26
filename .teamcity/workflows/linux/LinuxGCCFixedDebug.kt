@@ -50,11 +50,16 @@ object LinuxGCCFixedDebug : BuildType({
             name = "Configure + Build + Test (Debug)"
             scriptContent = """
                 set -euo pipefail
+                rm -rf logs
                 mkdir -p logs
 
                 cmake --preset "%env.CMAKE_CONFIGURE_PRESET_DEBUG%"
                 cmake --build --preset "%env.CMAKE_BUILD_PRESET_DEBUG%" --parallel "%env.BUILD_JOBS%"
-                ctest --preset "%env.CMAKE_TEST_PRESET_DEBUG%" --output-on-failure --output-junit logs/ctest-junit.xml
+                ctest \
+                  --preset "%env.CMAKE_TEST_PRESET_DEBUG%" \
+                  --test-dir "out/build/%env.TC_UNIQUE_DIR%/fixed" \
+                  --output-on-failure \
+                  --output-junit "$(pwd)/logs/ctest-junit.xml"
             """.trimIndent()
         }
         script {
@@ -66,13 +71,19 @@ object LinuxGCCFixedDebug : BuildType({
                 export CCACHE_BASEDIR="/ws"
                 export CCACHE_COMPRESS=1
 
-                rm -rf artifacts/stage-debug artifacts/full-build logs
-                mkdir -p artifacts logs
+                rm -rf artifacts/stage-debug artifacts/full-build
+                mkdir -p artifacts
                 BUILD_DIR="out/build/%env.TC_UNIQUE_DIR%/fixed"
                 cmake --install "${'$'}BUILD_DIR" --config Debug --prefix artifacts/stage-debug
 
                 if [ "%env.PUBLISH_FULL_BUILD_DIR%" = "true" ] && [ -d "${'$'}BUILD_DIR" ]; then
                   cp -a "${'$'}BUILD_DIR" artifacts/full-build || true
+                fi
+                
+                if [ -f logs/ctest-junit.xml ]; then
+                  echo "JUnit report present at logs/ctest-junit.xml"
+                else
+                  echo "WARNING: JUnit report missing at logs/ctest-junit.xml" >&2
                 fi
                 echo "Debug staging artifacts prepared."
             """.trimIndent()

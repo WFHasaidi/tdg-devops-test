@@ -43,7 +43,8 @@ object WindowsMSVCFixedDebug : BuildType({
 
                 if "%env.TC_UNIQUE_DIR%"=="" set "TC_UNIQUE_DIR=local" else set "TC_UNIQUE_DIR=%env.TC_UNIQUE_DIR%"
 
-                if not exist logs mkdir logs
+                if exist logs rmdir /s /q logs
+                mkdir logs
 
                 call "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\Tools\VsDevCmd.bat" -arch=amd64 -host_arch=amd64 || exit /b 1
 
@@ -52,7 +53,10 @@ object WindowsMSVCFixedDebug : BuildType({
 
                 cmake --preset %env.CMAKE_CONFIGURE_PRESET_DEBUG% -DTC_UNIQUE_DIR=%TC_UNIQUE_DIR% || exit /b 1
                 cmake --build --preset %env.CMAKE_BUILD_PRESET_DEBUG% --parallel %env.BUILD_JOBS% || exit /b 1
-                ctest --preset %env.CMAKE_TEST_PRESET_DEBUG% --output-on-failure --output-junit logs\ctest-junit-windows.xml || exit /b 1
+                rem Use forward slashes so TeamCity XML report feature matches the path
+                rem Write JUnit report with absolute path so TeamCity parses it (escape %% to avoid TeamCity param expansion)
+                set "JUNIT_PATH=%%CD%%/logs/ctest-junit-windows.xml"
+                ctest --preset %env.CMAKE_TEST_PRESET_DEBUG% --output-on-failure --output-junit "!JUNIT_PATH!" || exit /b 1
 
                 if not exist artifacts mkdir artifacts
                 set "BUILD_DIR=out/build/%TC_UNIQUE_DIR%/fixed"
