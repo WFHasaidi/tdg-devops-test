@@ -49,4 +49,8 @@ project {
 
     buildType(LinuxGCC)
     buildType(LinuxClangFixed)
+    buildType(WindowsMSVCFixed)
+    buildType(LinuxGCCFixedQuality)
+    buildType(CrossPlatformFixed)
+    buildType(NightlyFixedMatrix)
 }
