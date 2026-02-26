@@ -1,4 +1,5 @@
 import jetbrains.buildServer.configs.kotlin.*
+import jetbrains.buildServer.configs.kotlin.buildFeatures.commitStatusPublisher
 import jetbrains.buildServer.configs.kotlin.triggers.vcs
 
 object CrossPlatformFixed : BuildType({
@@ -7,6 +8,18 @@ object CrossPlatformFixed : BuildType({
 
     vcs {
         root(TdgVcsRoot)
+    }
+
+    features {
+        commitStatusPublisher {
+            vcsRootExtId = "TdgVcsRoot"
+            publisher = github {
+                githubUrl = "https://api.github.com"
+                authType = personalToken {
+                    token = "%github.token%"
+                }
+            }
+        }
     }
 
     triggers {
