@@ -53,4 +53,8 @@ project {
     buildType(LinuxGCCFixedQuality)
     buildType(CrossPlatformFixed)
     buildType(NightlyFixedMatrix)
+    buildType(ConanLinuxGCCArtifactory)
+    buildType(ConanLinuxClangArtifactory)
+    buildType(ConanWindowsMSVCArtifactory)
+    buildType(ConanArtifactoryMatrix)
 }
