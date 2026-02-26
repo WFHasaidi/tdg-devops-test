@@ -2,7 +2,7 @@
     "version": 6,
     "cmakeMinimumRequired": {
         "major": 3,
-        "minor": 14,
+        "minor": 25,
         "patch": 0
     },
     "configurePresets": [
@@ -10,7 +10,7 @@
             "name": "default",
             "displayName": "Default (Ninja)",
             "generator": "Ninja",
-            "binaryDir": "${sourceDir}/build",
+            "binaryDir": "${sourceDir}/out/build/$env{TC_UNIQUE_DIR}/default",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
                 "BUILD_TESTS": "ON"
@@ -20,10 +20,28 @@
             "name": "release",
             "displayName": "Release (Ninja)",
             "generator": "Ninja",
-            "binaryDir": "${sourceDir}/build-release",
+            "binaryDir": "${sourceDir}/out/build/$env{TC_UNIQUE_DIR}/release",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Release",
                 "BUILD_TESTS": "OFF"
+            }
+        },
+        {
+            "name": "fixed",
+            "displayName": "Fixed (Ninja)",
+            "inherits": "default",
+            "binaryDir": "${sourceDir}/out/build/$env{TC_UNIQUE_DIR}/fixed",
+            "cacheVariables": {
+                "CMAKE_CXX_FLAGS": "-DFIX_FACTORIAL_BUG"
+            }
+        },
+        {
+            "name": "fixed-release",
+            "displayName": "Fixed Release (Ninja)",
+            "inherits": "release",
+            "binaryDir": "${sourceDir}/out/build/$env{TC_UNIQUE_DIR}/fixed-release",
+            "cacheVariables": {
+                "CMAKE_CXX_FLAGS": "-DFIX_FACTORIAL_BUG"
             }
         }
     ],
@@ -35,12 +53,30 @@
         {
             "name": "release",
             "configurePreset": "release"
+        },
+        {
+            "name": "fixed",
+            "inherits": "default",
+            "configurePreset": "fixed"
+        },
+        {
+            "name": "fixed-release",
+            "inherits": "release",
+            "configurePreset": "fixed-release"
         }
     ],
     "testPresets": [
         {
             "name": "default",
             "configurePreset": "default",
+            "output": {
+                "outputOnFailure": true
+            }
+        },
+        {
+            "name": "fixed",
+            "inherits": "default",
+            "configurePreset": "fixed",
             "output": {
                 "outputOnFailure": true
             }
