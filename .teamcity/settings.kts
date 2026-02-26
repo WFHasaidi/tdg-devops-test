@@ -48,4 +48,5 @@ project {
     vcsRoot(TdgVcsRoot)
 
     buildType(LinuxGCC)
+    buildType(WindowsMSVCFixed)
 }
