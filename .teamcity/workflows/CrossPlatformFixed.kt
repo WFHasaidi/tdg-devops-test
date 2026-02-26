@@ -12,7 +12,6 @@ object CrossPlatformFixed : BuildType({
 
     features {
         commitStatusPublisher {
-            vcsRootExtId = "TdgVcsRoot"
             publisher = github {
                 githubUrl = "https://api.github.com"
                 authType = personalToken {
