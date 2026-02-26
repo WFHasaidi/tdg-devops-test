@@ -10,10 +10,11 @@ ARG CMAKE_VERSION=3.29.8
 RUN dnf -y update \
     && dnf -y install dnf-plugins-core \
     && dnf config-manager --set-enabled crb \
+    && dnf -y install epel-release \    
     && dnf -y install \
         git curl-minimal unzip tar jq \
         python3 python3-pip \
-        ninja-build make \
+        ninja-build make ccache \
         openssl ca-certificates \
     && dnf clean all
 
@@ -39,6 +40,7 @@ RUN set -eux; \
     echo "Requested LLVM/Clang RPM version-release: ${LLVM_RPM_VERSION}"; \
     echo "--- clang ---"; clang --version | head -n 1; \
     echo "--- clang++ ---"; clang++ --version | head -n 1; \
+    echo "--- ccache ---"; ccache --version | head -n 1; \
     echo "--- cmake ---"; cmake --version | head -n 1; \
     echo "--- ninja ---"; ninja --version; \
     echo "--- python ---"; python3 --version; \
