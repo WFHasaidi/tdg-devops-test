@@ -10,6 +10,6 @@ object TdgVcsRoot : GitVcsRoot({
     """.trimIndent()
     authMethod = password {
         userName = "x-access-token"
-        password = "%github.token%"
+        password = "credentialsJSON:d3a28e96-4adf-436a-bbd6-493d3ba166b5"
     }
 })
