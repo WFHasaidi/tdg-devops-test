@@ -48,4 +48,7 @@ project {
     vcsRoot(TdgVcsRoot)
 
     buildType(LinuxGCC)
+    buildType(LinuxGCCFixedQuality)
+    buildType(CrossPlatformFixed)
+    buildType(NightlyFixedMatrix)
 }
